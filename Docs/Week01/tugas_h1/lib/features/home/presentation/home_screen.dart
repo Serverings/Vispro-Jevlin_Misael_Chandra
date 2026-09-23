@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:warung_digital/core/widgets/price_tag.dart';
-
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -32,6 +30,25 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class PriceTag extends StatelessWidget {
+  const PriceTag({super.key, required this.price, required this.stock});
+
+  final int price;
+  final int stock;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Text('Rp$price'),
+        Text(stock > 0 ? 'Stok: $stock' : 'Stok habis'),
+      ],
     );
   }
 }
