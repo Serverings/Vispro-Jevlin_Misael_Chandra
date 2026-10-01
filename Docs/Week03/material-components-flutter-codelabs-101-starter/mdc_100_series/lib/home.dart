@@ -15,7 +15,6 @@ class HomePage extends StatelessWidget {
     }
 
     final ThemeData theme = Theme.of(context);
-    // Menggunakan locale 'en_US' secara langsung agar formatter intl tidak crash/error
     final NumberFormat formatter = NumberFormat.simpleCurrency(locale: 'en_US');
 
     return products.map((product) {

@@ -38,7 +38,6 @@ class _LoginPageState extends State<LoginPage> {
             ),
             const SizedBox(height: 12.0),
             
-            // Text Field Password
             TextField(
               controller: _passwordController,
               decoration: const InputDecoration(
@@ -50,7 +49,6 @@ class _LoginPageState extends State<LoginPage> {
             
             const SizedBox(height: 12.0),
             
-            // Button Bar
             OverflowBar(
               alignment: MainAxisAlignment.end,
               children: <Widget>[
