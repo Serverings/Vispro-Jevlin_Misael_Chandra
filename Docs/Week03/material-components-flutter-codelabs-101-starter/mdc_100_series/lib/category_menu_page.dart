@@ -15,7 +15,6 @@ class CategoryMenuPage extends StatelessWidget {
 
   Widget _buildCategory(Category category, BuildContext context) {
     final categoryString = category.toString().replaceAll('Category.', '').toUpperCase();
-    // Definisi variabel theme berdasarkan BuildContext
     final ThemeData theme = Theme.of(context);
 
     return GestureDetector(

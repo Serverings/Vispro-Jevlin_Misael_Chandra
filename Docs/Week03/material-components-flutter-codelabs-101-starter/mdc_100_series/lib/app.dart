@@ -7,7 +7,6 @@ import 'login.dart';
 import 'model/product.dart';
 import 'supplemental/cut_corners_border.dart';
 
-// Warna Khas Shrine (MDC-103 Palette)
 const kShrinePink50 = Color(0xFFFBB8AC);
 const kShrinePink100 = Color(0xFFFEDBD0);
 const kShrinePink300 = Color(0xFFFBB8AC);

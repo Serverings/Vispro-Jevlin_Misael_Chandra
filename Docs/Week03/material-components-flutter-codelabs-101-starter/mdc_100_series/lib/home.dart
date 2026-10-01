@@ -10,7 +10,6 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Ambil daftar produk berdasarkan kategori yang dipilih
     List<Product> products = ProductsRepository.loadProducts(category);
 
     return Scaffold(
