@@ -15,7 +15,9 @@ class HomePage extends StatelessWidget {
     }
 
     final ThemeData theme = Theme.of(context);
-    final NumberFormat formatter = NumberFormat.simpleCurrency(locale: 'en_US');
+    final NumberFormat formatter = NumberFormat.simpleCurrency(
+      locale: Localizations.localeOf(context).toString(),
+    );
 
     return products.map((product) {
       return Card(
@@ -41,7 +43,6 @@ class HomePage extends StatelessWidget {
                       product.name,
                       style: theme.textTheme.titleMedium,
                       maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 8.0),
                     Text(
