@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 
+import 'backdrop.dart';
+import 'category_menu_page.dart';
 import 'home.dart';
 import 'login.dart';
+import 'model/product.dart';
 import 'supplemental/cut_corners_border.dart';
 
+// Warna Khas Shrine (MDC-103 Palette)
 const kShrinePink50 = Color(0xFFFBB8AC);
 const kShrinePink100 = Color(0xFFFEDBD0);
 const kShrinePink300 = Color(0xFFFBB8AC);
@@ -16,8 +20,21 @@ const kShrineErrorRed = Color(0xFFC5032B);
 const kShrineSurfaceWhite = Color(0xFFFFFBFA);
 const kShrineBackgroundWhite = Colors.white;
 
-class ShrineApp extends StatelessWidget {
+class ShrineApp extends StatefulWidget {
   const ShrineApp({Key? key}) : super(key: key);
+
+  @override
+  State<ShrineApp> createState() => _ShrineAppState();
+}
+
+class _ShrineAppState extends State<ShrineApp> {
+  Category _currentCategory = Category.all;
+
+  void _onCategoryTap(Category category) {
+    setState(() {
+      _currentCategory = category;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,13 +43,23 @@ class ShrineApp extends StatelessWidget {
       initialRoute: '/login',
       routes: {
         '/login': (BuildContext context) => const LoginPage(),
-        '/': (BuildContext context) => const HomePage(),
+        '/': (BuildContext context) => Backdrop(
+              currentCategory: _currentCategory,
+              frontLayer: HomePage(category: _currentCategory),
+              backLayer: CategoryMenuPage(
+                currentCategory: _currentCategory,
+                onCategoryTap: _onCategoryTap,
+              ),
+              frontTitle: const Text('SHRINE'),
+              backTitle: const Text('MENU'),
+            ),
       },
       theme: _buildShrineTheme(),
     );
   }
 }
 
+// Global Function untuk Tema Shrine
 ThemeData _buildShrineTheme() {
   final ThemeData base = ThemeData.light(useMaterial3: false);
   return base.copyWith(

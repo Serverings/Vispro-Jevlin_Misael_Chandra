@@ -1,29 +1,41 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import 'model/product.dart';
 import 'model/products_repository.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({Key? key}) : super(key: key);
+  final Category category;
 
-  List<Card> _buildGridCards(BuildContext context) {
-    List<Product> products = ProductsRepository.loadProducts(Category.all);
+  const HomePage({this.category = Category.all, Key? key}) : super(key: key);
 
+  @override
+  Widget build(BuildContext context) {
+    // Ambil daftar produk berdasarkan kategori yang dipilih
+    List<Product> products = ProductsRepository.loadProducts(category);
+
+    return Scaffold(
+      body: GridView.count(
+        crossAxisCount: 2,
+        padding: const EdgeInsets.all(16.0),
+        childAspectRatio: 8.0 / 9.0,
+        children: _buildGridCards(context, products),
+      ),
+    );
+  }
+
+  List<Card> _buildGridCards(BuildContext context, List<Product> products) {
     if (products.isEmpty) {
       return const <Card>[];
     }
 
     final ThemeData theme = Theme.of(context);
-    final NumberFormat formatter = NumberFormat.simpleCurrency(
-      locale: Localizations.localeOf(context).toString(),
-    );
 
     return products.map((product) {
       return Card(
         clipBehavior: Clip.antiAlias,
+        elevation: 0.0,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start, // Ditulis CrossAxisAlignment
           children: <Widget>[
             AspectRatio(
               aspectRatio: 18 / 11,
@@ -37,7 +49,7 @@ class HomePage extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 8.0),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start, // Ditulis CrossAxisAlignment
                   children: <Widget>[
                     Text(
                       product.name,
@@ -46,7 +58,7 @@ class HomePage extends StatelessWidget {
                     ),
                     const SizedBox(height: 8.0),
                     Text(
-                      formatter.format(product.price),
+                      '\$${product.price}',
                       style: theme.textTheme.bodySmall,
                     ),
                   ],
@@ -57,44 +69,5 @@ class HomePage extends StatelessWidget {
         ),
       );
     }).toList();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(
-            Icons.menu,
-            semanticLabel: 'menu',
-          ),
-          onPressed: () {},
-        ),
-        title: const Text('SHRINE'),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(
-              Icons.search,
-              semanticLabel: 'search',
-            ),
-            onPressed: () {},
-          ),
-          IconButton(
-            icon: const Icon(
-              Icons.tune,
-              semanticLabel: 'filter',
-            ),
-            onPressed: () {},
-          ),
-        ],
-      ),
-      body: GridView.count(
-        crossAxisCount: 2,
-        padding: const EdgeInsets.all(16.0),
-        childAspectRatio: 8.0 / 9.0,
-        children: _buildGridCards(context),
-      ),
-      resizeToAvoidBottomInset: false,
-    );
   }
 }
