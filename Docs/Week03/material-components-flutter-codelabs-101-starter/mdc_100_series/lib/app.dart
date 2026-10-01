@@ -1,23 +1,21 @@
-// Copyright 2018-present the Flutter authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 import 'package:flutter/material.dart';
 
 import 'home.dart';
 import 'login.dart';
+import 'supplemental/cut_corners_border.dart';
 
-// TODO: Convert ShrineApp to stateful widget (104)
+const kShrinePink50 = Color(0xFFFBB8AC);
+const kShrinePink100 = Color(0xFFFEDBD0);
+const kShrinePink300 = Color(0xFFFBB8AC);
+const kShrinePink400 = Color(0xEAA4A4);
+
+const kShrineBrown900 = Color(0xFF442B2D);
+
+const kShrineErrorRed = Color(0xFFC5032B);
+
+const kShrineSurfaceWhite = Color(0xFFFFFBFA);
+const kShrineBackgroundWhite = Colors.white;
+
 class ShrineApp extends StatelessWidget {
   const ShrineApp({Key? key}) : super(key: key);
 
@@ -28,17 +26,37 @@ class ShrineApp extends StatelessWidget {
       initialRoute: '/login',
       routes: {
         '/login': (BuildContext context) => const LoginPage(),
-        // TODO: Change to a Backdrop with a HomePage frontLayer (104)
         '/': (BuildContext context) => const HomePage(),
-        // TODO: Make currentCategory field take _currentCategory (104)
-        // TODO: Pass _currentCategory for frontLayer (104)
-        // TODO: Change backLayer field value to CategoryMenuPage (104)
       },
-      // TODO: Customize the theme (103)
-      theme: ThemeData.light(useMaterial3: true),
+      theme: _buildShrineTheme(),
     );
   }
 }
 
-// TODO: Build a Shrine Theme (103)
-// TODO: Build a Shrine Text Theme (103)
+ThemeData _buildShrineTheme() {
+  final ThemeData base = ThemeData.light(useMaterial3: false);
+  return base.copyWith(
+    colorScheme: base.colorScheme.copyWith(
+      primary: kShrinePink100,
+      onPrimary: kShrineBrown900,
+      secondary: kShrineBrown900,
+      error: kShrineErrorRed,
+    ),
+    scaffoldBackgroundColor: kShrineBackgroundWhite,
+    textSelectionTheme: const TextSelectionThemeData(
+      selectionColor: kShrinePink100,
+    ),
+    inputDecorationTheme: const InputDecorationTheme(
+      border: CutCornersBorder(),
+      focusedBorder: CutCornersBorder(
+        borderSide: BorderSide(
+          width: 2.0,
+          color: kShrineBrown900,
+        ),
+      ),
+      floatingLabelStyle: TextStyle(
+        color: kShrineBrown900,
+      ),
+    ),
+  );
+}
