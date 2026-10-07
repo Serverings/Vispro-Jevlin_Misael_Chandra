@@ -1,0 +1,5 @@
+1. Design Systems
+Menggunakan ThemeData memusatkan seluruh variabel visual seperti colorScheme, typography, dan shape ke dalam satu sumber utama. Dibandingkan menuliskan warna dan gaya secara manual di setiap widget individual, ThemeData memungkinkan perubahan tampilan seluruh aplikasi hanya dengan mengubah properti tema utama. Hal ini menjaga konsistensi visual di setiap layar, mengurangi duplikasi kode, dan memudahkan implementasi fitur seperti Dark Mode atau pembaruan branding.
+
+2. State & Animation
+Pada widget Backdrop (MDC-104), status keterbukaan menu dikelola oleh _BackdropState menggunakan AnimationController. Status layer depan dan belakang dimanipulasi melalui method _toggleBackdropLayerVisibility() yang memicu animasi fling(). Saat nilai _controller berubah, posisi layer depan digeser secara dinamis menggunakan PositionedTransition dan RelativeRectTween. Sementara itu, layer menu di belakang menerima interaksi sentuhan lewat callback untuk memperbarui kategori produk yang dipilih, yang kemudian diteruskan kembali ke layer depan untuk memperbarui daftar produk yang ditampilkan.
