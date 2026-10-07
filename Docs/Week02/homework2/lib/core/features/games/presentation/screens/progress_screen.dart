@@ -33,6 +33,14 @@ class ProgressScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
+                    '${game.progress}%',
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
                     game.title,
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
@@ -50,4 +58,4 @@ class ProgressScreen extends StatelessWidget {
       ),
     );
   }
-} 
+}

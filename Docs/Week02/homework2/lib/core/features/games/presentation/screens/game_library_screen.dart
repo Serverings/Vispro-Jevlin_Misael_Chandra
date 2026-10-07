@@ -66,7 +66,13 @@ class _GameLibraryScreenState extends State<GameLibraryScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('GameVault'),
+        title: Text(
+          'GameVault',
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                color: Theme.of(context).colorScheme.primary,
+                fontWeight: FontWeight.bold,
+              ),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
