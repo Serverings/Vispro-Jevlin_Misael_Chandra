@@ -11,6 +11,7 @@ class Game {
   final String description;
   final GameStatus status;
   final int progress;
+  final String? imageAsset;
 
   const Game({
     required this.title,
@@ -18,5 +19,6 @@ class Game {
     required this.description,
     required this.status,
     required this.progress,
+    this.imageAsset,
   });
-} 
+}

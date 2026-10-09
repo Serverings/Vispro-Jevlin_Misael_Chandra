@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-// empty_game_state.dart
 class EmptyGameState extends StatelessWidget {
   final String message;
   final String actionLabel;

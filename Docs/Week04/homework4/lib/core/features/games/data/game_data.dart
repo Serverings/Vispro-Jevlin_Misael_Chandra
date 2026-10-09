@@ -8,6 +8,7 @@ const List<Game> gameData = [
         'An open-world action RPG with challenging combat and exploration.',
     status: GameStatus.playing,
     progress: 65,
+    imageAsset: 'assets/images/Eldenring.jpeg',
   ),
   Game(
     title: 'The Witcher 3',
@@ -16,6 +17,7 @@ const List<Game> gameData = [
         'An open-world role-playing game following the story of Geralt of Rivia.',
     status: GameStatus.backlog,
     progress: 0,
+    imageAsset: 'assets/images/TheWitcher.jpg',
   ),
   Game(
     title: 'Hades',
@@ -23,7 +25,7 @@ const List<Game> gameData = [
     description:
         'A fast-paced action game about escaping the Underworld.',
     status: GameStatus.finished,
-    progress: 100,
+    progress: 100,imageAsset: 'assets/images/Hades.jpeg',
   ),
   Game(
     title: 'Cyberpunk 2077',
@@ -32,6 +34,7 @@ const List<Game> gameData = [
         'An open-world RPG set in the futuristic Night City.',
     status: GameStatus.backlog,
     progress: 0,
+    imageAsset: 'assets/images/Cyberpunk2077.jpeg',
   ),
   Game(
     title: 'Stardew Valley',
@@ -40,6 +43,7 @@ const List<Game> gameData = [
         'A farming simulation game where players can grow crops, raise animals, and build relationships.',
     status: GameStatus.playing,
     progress: 40,
+    imageAsset: 'assets/images/StardewValley.png',
   ),
   
   Game(
@@ -49,5 +53,6 @@ const List<Game> gameData = [
   'Deskripsi panjang Sekali yang tidak ada duanya untuk menguji ellipsis di kartu dan memastikan bahwa teks yang panjang tidak merusak tampilan kartu dan tetap terlihat rapi dan teratur di dalam aplikasi dan membantu Jevlin untuk menaklukan dunia serta vispro (amin).',
   status: GameStatus.playing,
   progress: 50,
+  imageAsset: 'assets/images/Cyberpunk2077.jpeg',
 ),
 ];

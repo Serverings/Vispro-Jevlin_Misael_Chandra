@@ -45,6 +45,14 @@ class _GameLibraryScreenState extends State<GameLibraryScreen> {
   void _updateStatus(GameStatus? status) =>
       setState(() => _selectedStatus = status);
 
+  void _resetFilters() {
+    _searchController.clear();
+    setState(() {
+      _searchQuery = '';
+      _selectedStatus = null;
+    });
+  }
+
   void _openGameDetail(Game game) {
     Navigator.push(
       context,
@@ -55,19 +63,30 @@ class _GameLibraryScreenState extends State<GameLibraryScreen> {
   @override
   Widget build(BuildContext context) {
     final List<Game> games = _filteredGames;
+    final ColorScheme scheme = Theme.of(context).colorScheme;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'GameVault',
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                color: Theme.of(context).colorScheme.primary,
-                fontWeight: FontWeight.bold,
+        centerTitle: false,
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.sports_esports, color: scheme.primary),
+            const SizedBox(width: 8),
+            Flexible(
+              child: Text(
+                'GameVault',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      color: scheme.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
               ),
+            ),
+          ],
         ),
       ),
-      // SafeArea keeps the last card out from under the gesture bar.
-      // (The AppBar already handles the notch.)
       body: SafeArea(
         top: false,
         child: LayoutBuilder(
@@ -78,27 +97,47 @@ class _GameLibraryScreenState extends State<GameLibraryScreen> {
               MediaQuery.textScalerOf(context).scale(14) / 14,
             );
 
-            // One scroll view for everything: with the keyboard open on a
-            // short screen the search field and filter scroll away instead
-            // of overflowing.
+            final Widget search = GameSearchBar(
+              controller: _searchController,
+              onChanged: _updateSearch,
+            );
+            final Widget filter = GameStatusFilter(
+              selectedStatus: _selectedStatus,
+              onChanged: _updateStatus,
+            );
+
             return CustomScrollView(
               slivers: [
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        GameSearchBar(
-                          controller: _searchController,
-                          onChanged: _updateSearch,
-                        ),
+                        if (wide)
+                          // Wide screens: search and filter share one row.
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(child: search),
+                              const SizedBox(width: 12),
+                              SizedBox(width: 240, child: filter),
+                            ],
+                          )
+                        else ...[
+                          search,
+                          const SizedBox(height: 12),
+                          filter,
+                        ],
                         const SizedBox(height: 16),
-                        GameStatusFilter(
-                          key: ValueKey(_selectedStatus),
-                          selectedStatus: _selectedStatus,
-                          onChanged: _updateStatus,
+                        Text(
+                          '${games.length} ${games.length == 1 ? 'game' : 'games'}',
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelLarge
+                              ?.copyWith(color: scheme.onSurfaceVariant),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 12),
                       ],
                     ),
                   ),
@@ -111,26 +150,20 @@ class _GameLibraryScreenState extends State<GameLibraryScreen> {
                           ? 'No games found for "$_searchQuery".'
                           : 'No games available.',
                       actionLabel: 'Clear search & filter',
-                      onAction: () {
-                        _searchController.clear();
-                        setState(() {
-                          _searchQuery = '';
-                          _selectedStatus = null;
-                        });
-                      },
+                      onAction: _resetFilters,
                     ),
                   )
                 else
                   SliverPadding(
                     padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                     sliver: wide
-                        // Tablet: the layout changes, it does not stretch.
                         ? SliverGrid.builder(
                             gridDelegate:
                                 SliverGridDelegateWithMaxCrossAxisExtent(
                               maxCrossAxisExtent: 360,
                               crossAxisSpacing: 12,
-                              mainAxisExtent: 88 * textScale,
+                              mainAxisSpacing: 12,
+                              mainAxisExtent: 132 * textScale,
                             ),
                             itemCount: games.length,
                             itemBuilder: (context, index) => GameCard(
@@ -138,9 +171,10 @@ class _GameLibraryScreenState extends State<GameLibraryScreen> {
                               onTap: () => _openGameDetail(games[index]),
                             ),
                           )
-                        // Phone: lazy list.
-                        : SliverList.builder(
+                        : SliverList.separated(
                             itemCount: games.length,
+                            separatorBuilder: (context, index) =>
+                                const SizedBox(height: 12),
                             itemBuilder: (context, index) => GameCard(
                               game: games[index],
                               onTap: () => _openGameDetail(games[index]),
