@@ -45,14 +45,5 @@ const List<Game> gameData = [
     progress: 40,
     imageAsset: 'assets/images/StardewValley.png',
   ),
-  
-  Game(
-  title: 'Judul game yang sangat sangat panjang sekali untuk menguji ellipsis di kartu',
-  genre: 'Genre yang juga sangat panjang sekali untuk menguji ellipsis',
-  description:
-  'Deskripsi panjang Sekali yang tidak ada duanya untuk menguji ellipsis di kartu dan memastikan bahwa teks yang panjang tidak merusak tampilan kartu dan tetap terlihat rapi dan teratur di dalam aplikasi dan membantu Jevlin untuk menaklukan dunia serta vispro (amin).',
-  status: GameStatus.playing,
-  progress: 50,
-  imageAsset: 'assets/images/Cyberpunk2077.jpeg',
-),
+
 ];

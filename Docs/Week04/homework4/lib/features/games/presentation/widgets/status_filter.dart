@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:homework2/core/features/games/models/game.dart';
-import 'package:homework2/core/features/games/presentation/widgets/status_pill.dart';
+import 'package:homework2/core/theme/app_spacing.dart';
+import 'package:homework2/features/games/models/game.dart';
+import 'package:homework2/features/games/presentation/utils/game_status_style.dart';
 
 class GameStatusFilter extends StatelessWidget {
   final GameStatus? selectedStatus;
@@ -23,7 +24,7 @@ class GameStatusFilter extends StatelessWidget {
         prefixIcon: Icon(Icons.filter_list),
         filled: true,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(16)),
+          borderRadius: AppRadius.lgAll,
           borderSide: BorderSide.none,
         ),
       ),

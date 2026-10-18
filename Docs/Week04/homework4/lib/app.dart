@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:homework2/core/features/games/data/game_data.dart';
-import 'package:homework2/core/features/games/models/game.dart';
-import 'package:homework2/core/features/games/presentation/screens/game_library_screen.dart';
 import 'package:homework2/core/theme/app_theme.dart';
+import 'package:homework2/features/games/data/game_data.dart';
+import 'package:homework2/features/games/models/game.dart';
+import 'package:homework2/features/games/presentation/screens/home_shell.dart';
 
 class GameVaultApp extends StatelessWidget {
   final List<Game> games;
@@ -22,7 +22,7 @@ class GameVaultApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: themeMode,
-      home: GameLibraryScreen(games: games),
+      home: HomeShell(games: games),
     );
   }
 }

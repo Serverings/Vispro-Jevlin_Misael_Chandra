@@ -1,13 +1,14 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:homework2/core/features/games/data/game_data.dart';
-import 'package:homework2/core/features/games/models/game.dart';
-import 'package:homework2/core/features/games/presentation/screens/game_detail_screen.dart';
-import 'package:homework2/core/features/games/presentation/widgets/empty_game_state.dart';
-import 'package:homework2/core/features/games/presentation/widgets/game_card.dart';
-import 'package:homework2/core/features/games/presentation/widgets/game_search_bar.dart';
-import 'package:homework2/core/features/games/presentation/widgets/status_filter.dart';
+import 'package:homework2/core/layout/breakpoints.dart';
+import 'package:homework2/core/theme/app_spacing.dart';
+import 'package:homework2/features/games/data/game_data.dart';
+import 'package:homework2/features/games/models/game.dart';
+import 'package:homework2/features/games/presentation/screens/game_detail_screen.dart';
+import 'package:homework2/features/games/presentation/widgets/empty_game_state.dart';
+import 'package:homework2/features/games/presentation/widgets/game_card.dart';
+import 'package:homework2/features/games/presentation/widgets/library_header.dart';
 
 class GameLibraryScreen extends StatefulWidget {
   final List<Game> games;
@@ -19,6 +20,8 @@ class GameLibraryScreen extends StatefulWidget {
 }
 
 class _GameLibraryScreenState extends State<GameLibraryScreen> {
+  static const double _maxCardWidth = 360;
+
   final TextEditingController _searchController = TextEditingController();
 
   String _searchQuery = '';
@@ -65,14 +68,21 @@ class _GameLibraryScreenState extends State<GameLibraryScreen> {
     final List<Game> games = _filteredGames;
     final ColorScheme scheme = Theme.of(context).colorScheme;
 
+    Widget cardAt(int index) => GameCard(
+          game: games[index],
+          onTap: () => _openGameDetail(games[index]),
+        );
+
     return Scaffold(
+      // The HomeShell already resizes for the keyboard.
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         centerTitle: false,
         title: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(Icons.sports_esports, color: scheme.primary),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSpacing.sm),
             Flexible(
               child: Text(
                 'GameVault',
@@ -91,55 +101,22 @@ class _GameLibraryScreenState extends State<GameLibraryScreen> {
         top: false,
         child: LayoutBuilder(
           builder: (context, constraints) {
-            final bool wide = constraints.maxWidth >= 600;
+            final bool wide = constraints.maxWidth >= Breakpoints.wide;
             final double textScale = math.max(
               1.0,
               MediaQuery.textScalerOf(context).scale(14) / 14,
             );
 
-            final Widget search = GameSearchBar(
-              controller: _searchController,
-              onChanged: _updateSearch,
-            );
-            final Widget filter = GameStatusFilter(
-              selectedStatus: _selectedStatus,
-              onChanged: _updateStatus,
-            );
-
             return CustomScrollView(
               slivers: [
                 SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (wide)
-                          // Wide screens: search and filter share one row.
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(child: search),
-                              const SizedBox(width: 12),
-                              SizedBox(width: 240, child: filter),
-                            ],
-                          )
-                        else ...[
-                          search,
-                          const SizedBox(height: 12),
-                          filter,
-                        ],
-                        const SizedBox(height: 16),
-                        Text(
-                          '${games.length} ${games.length == 1 ? 'game' : 'games'}',
-                          style: Theme.of(context)
-                              .textTheme
-                              .labelLarge
-                              ?.copyWith(color: scheme.onSurfaceVariant),
-                        ),
-                        const SizedBox(height: 12),
-                      ],
-                    ),
+                  child: LibraryHeader(
+                    searchController: _searchController,
+                    onSearchChanged: _updateSearch,
+                    selectedStatus: _selectedStatus,
+                    onStatusChanged: _updateStatus,
+                    resultCount: games.length,
+                    wide: wide,
                   ),
                 ),
                 if (games.isEmpty)
@@ -155,30 +132,24 @@ class _GameLibraryScreenState extends State<GameLibraryScreen> {
                   )
                 else
                   SliverPadding(
-                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                    padding: AppSpacing.pageBody,
                     sliver: wide
                         ? SliverGrid.builder(
                             gridDelegate:
                                 SliverGridDelegateWithMaxCrossAxisExtent(
-                              maxCrossAxisExtent: 360,
-                              crossAxisSpacing: 12,
-                              mainAxisSpacing: 12,
-                              mainAxisExtent: 132 * textScale,
+                              maxCrossAxisExtent: _maxCardWidth,
+                              crossAxisSpacing: AppSpacing.md,
+                              mainAxisSpacing: AppSpacing.md,
+                              mainAxisExtent: GameCard.height * textScale,
                             ),
                             itemCount: games.length,
-                            itemBuilder: (context, index) => GameCard(
-                              game: games[index],
-                              onTap: () => _openGameDetail(games[index]),
-                            ),
+                            itemBuilder: (context, index) => cardAt(index),
                           )
                         : SliverList.separated(
                             itemCount: games.length,
                             separatorBuilder: (context, index) =>
-                                const SizedBox(height: 12),
-                            itemBuilder: (context, index) => GameCard(
-                              game: games[index],
-                              onTap: () => _openGameDetail(games[index]),
-                            ),
+                                const SizedBox(height: AppSpacing.md),
+                            itemBuilder: (context, index) => cardAt(index),
                           ),
                   ),
               ],

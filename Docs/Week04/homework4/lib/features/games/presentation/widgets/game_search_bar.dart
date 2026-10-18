@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:homework2/core/theme/app_spacing.dart';
 
 class GameSearchBar extends StatelessWidget {
   final TextEditingController controller;
@@ -20,7 +21,6 @@ class GameSearchBar extends StatelessWidget {
       decoration: InputDecoration(
         hintText: 'Search games...',
         prefixIcon: const Icon(Icons.search),
-        // The clear button only shows while there is text.
         suffixIcon: ValueListenableBuilder<TextEditingValue>(
           valueListenable: controller,
           builder: (context, value, _) {
@@ -37,7 +37,7 @@ class GameSearchBar extends StatelessWidget {
         ),
         filled: true,
         border: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(16)),
+          borderRadius: AppRadius.lgAll,
           borderSide: BorderSide.none,
         ),
       ),

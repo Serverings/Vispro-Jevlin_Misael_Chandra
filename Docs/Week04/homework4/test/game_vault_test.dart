@@ -17,10 +17,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:homework2/app.dart';
-import 'package:homework2/core/features/games/data/game_data.dart';
-import 'package:homework2/core/features/games/models/game.dart';
-import 'package:homework2/core/features/games/presentation/screens/game_detail_screen.dart';
-import 'package:homework2/core/features/games/presentation/widgets/game_card.dart';
+import 'package:homework2/features/games/data/game_data.dart';
+import 'package:homework2/features/games/models/game.dart';
+import 'package:homework2/features/games/presentation/screens/game_detail_screen.dart';
+import 'package:homework2/features/games/presentation/widgets/game_card.dart';
 import 'package:homework2/core/theme/app_theme.dart';
 
 const Size small = Size(320, 568);
@@ -113,14 +113,11 @@ Future<void> pumpDetail(
   await tester.pumpAndSettle();
 }
 
-/// Fails with Flutter's own message, so you can read widget, axis and pixels.
-/// If several errors happened at once, scroll up in the output to read each.
 void expectNoLayoutErrors(WidgetTester tester) {
   final Object? error = tester.takeException();
   expect(error, isNull, reason: 'Layout error:\n$error');
 }
 
-/// The main vertical scroll view of the library screen.
 Finder get mainScrollable => find
     .descendant(
       of: find.byType(CustomScrollView),
@@ -300,22 +297,90 @@ void main() {
       expect(find.text('No games found for "zzz".'), findsOneWidget);
     });
 
-    testWidgets('status filter filters the list', (tester) async {
-      await pumpApp(tester, large);
-      await tester.tap(find.byType(DropdownButtonFormField<GameStatus?>));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('finished'));
-      await tester.pumpAndSettle();
-      expectNoLayoutErrors(tester);
-      expect(find.byType(GameCard), findsOneWidget); // only Hades
-    });
+  testWidgets('status filter filters the list', (tester) async {
+    await pumpApp(tester, large);
 
-    testWidgets('tapping a card opens the detail screen', (tester) async {
-      await pumpApp(tester, small);
-      await tester.tap(find.text('Hades'));
-      await tester.pumpAndSettle();
-      expectNoLayoutErrors(tester);
-      expect(find.byType(GameDetailScreen), findsOneWidget);
-    });
+    final int expected =
+        gameData.where((g) => g.status == GameStatus.finished).length;
+
+    await tester.tap(find.byType(DropdownButtonFormField<GameStatus?>));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Finished').last);
+    await tester.pumpAndSettle();
+
+    expectNoLayoutErrors(tester);
+    expect(find.byType(GameCard), findsNWidgets(expected));
   });
+
+testWidgets('tapping a card opens the detail screen', (tester) async {
+  await pumpApp(tester, small);
+  await tester.enterText(find.byKey(const Key('search-field')), 'hades');
+  await tester.pumpAndSettle();
+
+  await tester.tap(find.byType(GameCard));
+  await tester.pumpAndSettle();
+
+  expectNoLayoutErrors(tester);
+  expect(find.byType(GameDetailScreen), findsOneWidget);
+});
+   testWidgets('navigation switches to the progress screen', (tester) async {
+     await pumpApp(tester, small);
+     await tester.tap(find.text('Progress'));
+     await tester.pumpAndSettle();
+     expectNoLayoutErrors(tester);
+     expect(find.text('My Progress'), findsOneWidget);
+   });
+
+  testWidgets('progress empty state leads back to the library', (tester) async {
+    await pumpApp(tester, small, games: const <Game>[]);
+    await tester.tap(find.text('Progress'));
+    await tester.pumpAndSettle();
+    expect(find.text('No games in progress yet.'), findsOneWidget);
+
+    final Finder browse = find.text('Browse library');
+    await tester.ensureVisible(browse);
+    await tester.pumpAndSettle();
+    await tester.tap(browse);
+    await tester.pumpAndSettle();
+    expect(find.text('No games available.'), findsOneWidget);
+  });
+
+   testWidgets('progress screen on a tablet has no layout errors', (tester) async {
+     await pumpApp(tester, tablet);
+     await tester.tap(find.text('Progress'));
+     await tester.pumpAndSettle();
+     expectNoLayoutErrors(tester);
+   });
+    testWidgets('DEBUG keyboard', (tester) async {
+      await pumpApp(tester, small, keyboard: 260);
+      final BuildContext ctx =
+          tester.element(find.byKey(const Key('search-field')));
+      debugPrint('viewInsets: ${MediaQuery.viewInsetsOf(ctx)}');
+      debugPrint('NavigationBar: ${find.byType(NavigationBar).evaluate().length}');
+      for (final Element e in find.byType(Scaffold).evaluate()) {
+        debugPrint('Scaffold rect: ${tester.getRect(find.byWidget(e.widget))}');
+      }
+      debugPrint('Scrollable rect: ${tester.getRect(mainScrollable)}');
+    });
+  testWidgets('DEBUG texts', (tester) async {
+    String texts() => find
+        .byType(Text)
+        .evaluate()
+        .map((e) => (e.widget as Text).data)
+        .whereType<String>()
+        .join(' | ');
+
+    await pumpApp(tester, small);
+    debugPrint('LIBRARY: ${texts()}');
+
+    await tester.tap(find.text('Progress'));
+    await tester.pumpAndSettle();
+    debugPrint('PROGRESS: ${texts()}');
+
+    await pumpApp(tester, small, games: const <Game>[]);
+    await tester.tap(find.text('Progress'));
+    await tester.pumpAndSettle();
+    debugPrint('PROGRESS EMPTY: ${texts()}');
+  });
+});
 }
