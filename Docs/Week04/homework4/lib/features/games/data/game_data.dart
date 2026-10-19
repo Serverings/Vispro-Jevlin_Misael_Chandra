@@ -45,5 +45,13 @@ const List<Game> gameData = [
     progress: 40,
     imageAsset: 'assets/images/StardewValley.png',
   ),
-
+  Game(
+    title: 'Party Club',
+    genre: 'Party Game',
+    description:
+        'A multiplayer party game cooking with friends and competing in every place and events coming.',
+    status: GameStatus.playing,
+    progress: 80,
+    imageAsset: 'assets/images/PartyClub.jpg',
+  ),
 ];

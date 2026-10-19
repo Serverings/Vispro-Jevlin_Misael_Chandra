@@ -1,19 +1,3 @@
-// =============================================================================
-// game_vault_test.dart — the nine layout tests, automated, for GameVault
-//
-// Put this file at  test/game_vault_test.dart  and run:
-//   flutter test test/game_vault_test.dart
-//
-// Every test sets a screen size (and sometimes a keyboard, a notch, a text
-// scale or a data set), pumps the app, and fails if Flutter reports ANY layout
-// error ("A RenderFlex overflowed…", "unbounded height", RangeError, …).
-//
-// NOTE: flutter test draws text with a test font in which every letter is a
-// full square, so text is much wider than on a phone. If a test fails but the
-// harness looks fine, that text has no overflow strategy (maxLines + ellipsis,
-// or room to wrap).
-// =============================================================================
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:homework2/app.dart';
@@ -22,6 +6,7 @@ import 'package:homework2/features/games/models/game.dart';
 import 'package:homework2/features/games/presentation/screens/game_detail_screen.dart';
 import 'package:homework2/features/games/presentation/widgets/game_card.dart';
 import 'package:homework2/core/theme/app_theme.dart';
+import 'package:homework2/features/games/data/in_memory_game_repository.dart';
 
 const Size small = Size(320, 568);
 const Size large = Size(430, 932);
@@ -32,8 +17,6 @@ const List<(String, Size)> screens = [
   ('large phone', large),
   ('tablet', tablet),
 ];
-
-// ---- test data --------------------------------------------------------------
 
 final String _long200 = List.filled(200, 'W').join(); // worst case: no spaces
 
@@ -65,9 +48,7 @@ final List<Game> bigGames = List.generate(
   ),
 );
 
-// ---- helpers ----------------------------------------------------------------
 
-/// Sets the fake screen, pumps the app and lets every animation finish.
 Future<void> pumpApp(
   WidgetTester tester,
   Size size, {
@@ -87,11 +68,15 @@ Future<void> pumpApp(
   addTearDown(tester.view.reset);
   addTearDown(tester.platformDispatcher.clearAllTestValues);
 
-  await tester.pumpWidget(GameVaultApp(games: games, themeMode: theme));
+     await tester.pumpWidget(
+     GameVaultApp(
+       repository: InMemoryGameRepository(games: games, delay: Duration.zero),
+       themeMode: theme,
+     ),
+   );
   await tester.pumpAndSettle();
 }
 
-/// Pumps the detail screen on its own (it is normally reached by tapping a card).
 Future<void> pumpDetail(
   WidgetTester tester,
   Size size,

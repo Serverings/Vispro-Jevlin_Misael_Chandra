@@ -1,24 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:homework2/core/layout/breakpoints.dart';
+import 'package:homework2/features/games/data/game_repository.dart';
 import 'package:homework2/features/games/models/game.dart';
 import 'package:homework2/features/games/presentation/screens/game_library_screen.dart';
 import 'package:homework2/features/games/presentation/screens/progress_screen.dart';
+import 'package:homework2/features/games/presentation/widgets/games_loader.dart';
 
-/// Owns the top-level navigation: a NavigationBar on phones and a
-/// NavigationRail on wide screens. Both tabs get the same games list.
 class HomeShell extends StatefulWidget {
-  final List<Game> games;
+  final GameRepository repository;
 
-  const HomeShell({super.key, required this.games});
+  const HomeShell({super.key, required this.repository});
 
   @override
   State<HomeShell> createState() => _HomeShellState();
 }
 
 class _HomeShellState extends State<HomeShell> {
-  // Keeps the tabs (and the search text) alive when the layout switches
-  // between phone and wide, e.g. on rotation.
   final GlobalKey _bodyKey = GlobalKey();
+  late Future<List<Game>> _games;
   int _index = 0;
 
   static const List<({IconData icon, IconData selectedIcon, String label})>
@@ -35,11 +34,18 @@ class _HomeShellState extends State<HomeShell> {
     ),
   ];
 
+  @override
+  void initState() {
+    super.initState();
+    _games = widget.repository.fetchGames();
+  }
+
   void _select(int index) => setState(() => _index = index);
+
+  void _reload() => setState(() => _games = widget.repository.fetchGames());
 
   @override
   Widget build(BuildContext context) {
-    // Back on the Progress tab returns to Library before leaving the app.
     return PopScope(
       canPop: _index == 0,
       onPopInvokedWithResult: (didPop, result) {
@@ -69,16 +75,20 @@ class _HomeShellState extends State<HomeShell> {
                   const VerticalDivider(width: 1),
                 ],
                 Expanded(
-                  child: IndexedStack(
-                    key: _bodyKey,
-                    index: _index,
-                    children: [
-                      GameLibraryScreen(games: widget.games),
-                      ProgressScreen(
-                        games: widget.games,
-                        onBrowseLibrary: () => _select(0),
-                      ),
-                    ],
+                  child: GamesLoader(
+                    future: _games,
+                    onRetry: _reload,
+                    builder: (games) => IndexedStack(
+                      key: _bodyKey,
+                      index: _index,
+                      children: [
+                        GameLibraryScreen(games: games),
+                        ProgressScreen(
+                          games: games,
+                          onBrowseLibrary: () => _select(0),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],

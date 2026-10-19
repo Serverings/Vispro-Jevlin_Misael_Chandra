@@ -13,35 +13,31 @@ class GameStatusFilter extends StatelessWidget {
     required this.onChanged,
   });
 
+  Widget _chip(GameStatus? status, String label) {
+    return Padding(
+      padding: const EdgeInsets.only(right: AppSpacing.sm),
+      child: ChoiceChip(
+        key: Key('filter-${status?.name ?? 'all'}'),
+        label: Text(label),
+        selected: selectedStatus == status,
+        showCheckmark: false,
+        onSelected: (_) => onChanged(status),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return DropdownButtonFormField<GameStatus?>(
-      key: ValueKey(selectedStatus),
-      initialValue: selectedStatus,
-      isExpanded: true,
-      decoration: const InputDecoration(
-        labelText: 'Filter by status',
-        prefixIcon: Icon(Icons.filter_list),
-        filled: true,
-        border: OutlineInputBorder(
-          borderRadius: AppRadius.lgAll,
-          borderSide: BorderSide.none,
-        ),
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+      child: Row(
+        children: [
+          _chip(null, 'All'),
+          for (final GameStatus status in GameStatus.values)
+            _chip(status, status.label),
+        ],
       ),
-      items: [
-        const DropdownMenuItem<GameStatus?>(value: null, child: Text('All')),
-        ...GameStatus.values.map(
-          (status) => DropdownMenuItem<GameStatus?>(
-            value: status,
-            child: Text(
-              status.label,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ),
-      ],
-      onChanged: onChanged,
     );
   }
 }

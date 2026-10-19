@@ -18,7 +18,6 @@ class AppTheme {
       extensions: <ThemeExtension<dynamic>>[
         brightness == Brightness.dark ? AppColors.dark : AppColors.light,
       ],
-      // Every filled button is at least 48 dp tall.
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
           minimumSize: const Size(64, AppSpacing.minTouchTarget),

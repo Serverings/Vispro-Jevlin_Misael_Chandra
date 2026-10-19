@@ -4,8 +4,10 @@ import 'package:homework2/features/games/models/game.dart';
 import 'package:homework2/features/games/presentation/utils/game_status_style.dart';
 import 'package:homework2/features/games/presentation/widgets/status_pill.dart';
 
-/// Overall completion plus a count per status.
 class ProgressSummary extends StatelessWidget {
+  static const double _ringSize = 80;
+  static const double _ringStroke = 8;
+
   final List<Game> games;
 
   const ProgressSummary({super.key, required this.games});
@@ -23,46 +25,63 @@ class ProgressSummary extends StatelessWidget {
       shape: const RoundedRectangleBorder(borderRadius: AppRadius.lgAll),
       child: Padding(
         padding: AppSpacing.page,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
+            SizedBox(
+              width: _ringSize,
+              height: _ringSize,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  CircularProgressIndicator(
+                    value: average.clamp(0, 100) / 100,
+                    strokeWidth: _ringStroke,
+                    strokeCap: StrokeCap.round,
+                    backgroundColor: scheme.primary.withValues(alpha: 0.16),
+                  ),
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(AppSpacing.md),
+                      child: FittedBox(
+                        child: Text(
+                          '$average%',
+                          style: text.titleMedium?.copyWith(
+                            color: scheme.primary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: AppSpacing.lg),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
                     'Overall completion',
-                    maxLines: 1,
+                    maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: text.titleSmall,
                   ),
-                ),
-                Text(
-                  '$average%',
-                  style: text.headlineSmall?.copyWith(
-                    color: scheme.primary,
-                    fontWeight: FontWeight.bold,
+                  const SizedBox(height: AppSpacing.sm),
+                  Wrap(
+                    spacing: AppSpacing.sm,
+                    runSpacing: AppSpacing.sm,
+                    children: [
+                      for (final GameStatus status in GameStatus.values)
+                        StatusPill(
+                          status: status,
+                          label:
+                              '${status.label} · ${games.where((g) => g.status == status).length}',
+                        ),
+                    ],
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.md),
-            LinearProgressIndicator(
-              value: average.clamp(0, 100) / 100,
-              minHeight: AppSpacing.sm,
-              borderRadius: AppRadius.smAll,
-            ),
-            const SizedBox(height: AppSpacing.lg),
-            Wrap(
-              spacing: AppSpacing.sm,
-              runSpacing: AppSpacing.sm,
-              children: [
-                for (final GameStatus status in GameStatus.values)
-                  StatusPill(
-                    status: status,
-                    label:
-                        '${status.label} · ${games.where((g) => g.status == status).length}',
-                  ),
-              ],
+                ],
+              ),
             ),
           ],
         ),

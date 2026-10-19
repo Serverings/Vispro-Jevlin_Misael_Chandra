@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:homework2/core/theme/app_spacing.dart';
 import 'package:homework2/features/games/models/game.dart';
+import 'package:homework2/features/games/presentation/utils/game_status_style.dart';
 import 'package:homework2/features/games/presentation/widgets/game_cover.dart';
 import 'package:homework2/features/games/presentation/widgets/status_pill.dart';
 
 class GameCard extends StatelessWidget {
   static const double _coverWidth = 72;
   static const double _coverHeight = 108;
-
 
   static const double height = _coverHeight + AppSpacing.md * 2;
 
@@ -28,6 +28,7 @@ class GameCard extends StatelessWidget {
     final ThemeData theme = Theme.of(context);
     final TextTheme text = theme.textTheme;
     final ColorScheme scheme = theme.colorScheme;
+    final Color statusColor = game.status.color(context);
     final Widget cover = GameCover(game: game);
 
     return Card.filled(
@@ -76,6 +77,9 @@ class GameCard extends StatelessWidget {
                             value: game.progress.clamp(0, 100) / 100,
                             minHeight: AppSpacing.sm,
                             borderRadius: AppRadius.smAll,
+                            color: statusColor,
+                            backgroundColor:
+                                statusColor.withValues(alpha: 0.16),
                           ),
                         ),
                         const SizedBox(width: AppSpacing.sm),

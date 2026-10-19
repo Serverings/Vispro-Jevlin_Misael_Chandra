@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:homework2/core/layout/breakpoints.dart';
 import 'package:homework2/core/theme/app_spacing.dart';
 import 'package:homework2/features/games/models/game.dart';
-import 'package:homework2/features/games/presentation/widgets/game_cover.dart';
+import 'package:homework2/features/games/presentation/utils/game_status_style.dart';
+import 'package:homework2/features/games/presentation/widgets/detail_cover.dart';
 import 'package:homework2/features/games/presentation/widgets/status_pill.dart';
 
 class GameDetailScreen extends StatelessWidget {
   static const double _coverAspect = 2 / 3;
-  static const double _phoneCoverMaxWidth = 240;
+  static const double _phoneCoverMaxWidth = 220;
   static const double _wideCoverWidth = 280;
 
   final Game game;
@@ -29,44 +30,53 @@ class GameDetailScreen extends StatelessWidget {
         child: LayoutBuilder(
           builder: (context, constraints) {
             final bool wide = constraints.maxWidth >= Breakpoints.wide;
-            final Widget cover = Hero(tag: game, child: GameCover(game: game));
             final Widget info = _GameInfo(game: game);
 
             return SingleChildScrollView(
-              padding: AppSpacing.page,
               child: wide
-                  // Wide: cover on the left, details on the right.
-                  ? Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          width: _wideCoverWidth,
-                          child: AspectRatio(
-                            aspectRatio: _coverAspect,
-                            child: cover,
-                          ),
-                        ),
-                        const SizedBox(width: AppSpacing.xl),
-                        Expanded(child: info),
-                      ],
-                    )
-                  // Narrow: cover on top, details below.
-                  : Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Center(
-                          child: ConstrainedBox(
-                            constraints: const BoxConstraints(
-                              maxWidth: _phoneCoverMaxWidth,
-                            ),
+                  ? Padding(
+                      padding: AppSpacing.page,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            width: _wideCoverWidth,
                             child: AspectRatio(
                               aspectRatio: _coverAspect,
-                              child: cover,
+                              child: DetailPoster(game: game),
+                            ),
+                          ),
+                          const SizedBox(width: AppSpacing.xl),
+                          Expanded(child: info),
+                        ],
+                      ),
+                    )
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        DetailBackdrop(
+                          game: game,
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(
+                              AppSpacing.lg,
+                              AppSpacing.lg,
+                              AppSpacing.lg,
+                              AppSpacing.xl,
+                            ),
+                            child: Center(
+                              child: ConstrainedBox(
+                                constraints: const BoxConstraints(
+                                  maxWidth: _phoneCoverMaxWidth,
+                                ),
+                                child: AspectRatio(
+                                  aspectRatio: _coverAspect,
+                                  child: DetailPoster(game: game),
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                        const SizedBox(height: AppSpacing.xl),
-                        info,
+                        Padding(padding: AppSpacing.page, child: info),
                       ],
                     ),
             );
@@ -139,6 +149,9 @@ class _GameInfo extends StatelessWidget {
                   value: game.progress.clamp(0, 100) / 100,
                   minHeight: AppSpacing.sm,
                   borderRadius: AppRadius.smAll,
+                  color: game.status.color(context),
+                  backgroundColor:
+                      game.status.color(context).withValues(alpha: 0.16),
                 ),
               ],
             ),

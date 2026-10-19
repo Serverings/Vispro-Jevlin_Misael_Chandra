@@ -4,8 +4,9 @@ import 'package:homework2/features/games/models/game.dart';
 import 'package:homework2/features/games/presentation/utils/game_status_style.dart';
 
 class StatusPill extends StatelessWidget {
-  final GameStatus status;
+  static const double _dotSize = 6;
 
+  final GameStatus status;
   final String? label;
 
   const StatusPill({super.key, required this.status, this.label});
@@ -23,14 +24,27 @@ class StatusPill extends StatelessWidget {
         color: color.withValues(alpha: 0.14),
         borderRadius: AppRadius.pillAll,
       ),
-      child: Text(
-        label ?? status.label,
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-        style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              color: color,
-              fontWeight: FontWeight.w600,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: _dotSize,
+            height: _dotSize,
+            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+          ),
+          const SizedBox(width: AppSpacing.xs),
+          Flexible(
+            child: Text(
+              label ?? status.label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: color,
+                    fontWeight: FontWeight.w600,
+                  ),
             ),
+          ),
+        ],
       ),
     );
   }

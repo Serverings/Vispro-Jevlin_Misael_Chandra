@@ -3,9 +3,9 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:homework2/core/layout/breakpoints.dart';
 import 'package:homework2/core/theme/app_spacing.dart';
-import 'package:homework2/features/games/data/game_data.dart';
 import 'package:homework2/features/games/models/game.dart';
 import 'package:homework2/features/games/presentation/screens/game_detail_screen.dart';
+import 'package:homework2/features/games/presentation/widgets/brand_title.dart';
 import 'package:homework2/features/games/presentation/widgets/empty_game_state.dart';
 import 'package:homework2/features/games/presentation/widgets/game_card.dart';
 import 'package:homework2/features/games/presentation/widgets/library_header.dart';
@@ -13,7 +13,7 @@ import 'package:homework2/features/games/presentation/widgets/library_header.dar
 class GameLibraryScreen extends StatefulWidget {
   final List<Game> games;
 
-  const GameLibraryScreen({super.key, this.games = gameData});
+  const GameLibraryScreen({super.key, required this.games});
 
   @override
   State<GameLibraryScreen> createState() => _GameLibraryScreenState();
@@ -66,7 +66,6 @@ class _GameLibraryScreenState extends State<GameLibraryScreen> {
   @override
   Widget build(BuildContext context) {
     final List<Game> games = _filteredGames;
-    final ColorScheme scheme = Theme.of(context).colorScheme;
 
     Widget cardAt(int index) => GameCard(
           game: games[index],
@@ -74,28 +73,10 @@ class _GameLibraryScreenState extends State<GameLibraryScreen> {
         );
 
     return Scaffold(
-      // The HomeShell already resizes for the keyboard.
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         centerTitle: false,
-        title: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.sports_esports, color: scheme.primary),
-            const SizedBox(width: AppSpacing.sm),
-            Flexible(
-              child: Text(
-                'GameVault',
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      color: scheme.primary,
-                      fontWeight: FontWeight.bold,
-                    ),
-              ),
-            ),
-          ],
-        ),
+        title: const BrandTitle(),
       ),
       body: SafeArea(
         top: false,
@@ -116,7 +97,6 @@ class _GameLibraryScreenState extends State<GameLibraryScreen> {
                     selectedStatus: _selectedStatus,
                     onStatusChanged: _updateStatus,
                     resultCount: games.length,
-                    wide: wide,
                   ),
                 ),
                 if (games.isEmpty)
