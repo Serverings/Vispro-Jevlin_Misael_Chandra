@@ -5,11 +5,7 @@ class GameCard extends StatelessWidget {
   final Game game;
   final VoidCallback onTap;
 
-  const GameCard({
-    super.key,
-    required this.game,
-    required this.onTap,
-  });
+  const GameCard({super.key, required this.game, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -17,8 +13,8 @@ class GameCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       child: ListTile(
         onTap: onTap,
-        title: Text(game.title),
-        subtitle: Text(game.genre),
+        title: Text(game.title, maxLines: 1, overflow: TextOverflow.ellipsis),
+        subtitle: Text(game.genre, maxLines: 1, overflow: TextOverflow.ellipsis),
         trailing: Text('${game.progress}%'),
       ),
     );

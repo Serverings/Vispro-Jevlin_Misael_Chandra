@@ -19,4 +19,4 @@ class Game {
     required this.status,
     required this.progress,
   });
-}
+} 

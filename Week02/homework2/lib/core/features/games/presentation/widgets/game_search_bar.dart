@@ -13,6 +13,7 @@ class GameSearchBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      key: const Key('search-field'),
       controller: controller,
       onChanged: onChanged,
       decoration: const InputDecoration(
